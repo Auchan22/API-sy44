@@ -23,6 +23,9 @@
             "./config/packages/fos_rest.yaml"
         ]
     },
+    "handcraftedinthealps/rest-routing-bundle": {
+        "version": "1.0.6"
+    },
     "symfony/console": {
         "version": "4.4",
         "recipe": {
