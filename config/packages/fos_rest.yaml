@@ -1,0 +1,12 @@
+
+fos_rest:
+    format_listener:
+            rules:
+                - {path: "^/", priorities: ["json"], fallback_format: json}
+    #Configurando exception y error handling en routes
+    exception:
+            enabled: true
+    view:
+        view_response_listener: "force"
+        formats:
+            json: true
