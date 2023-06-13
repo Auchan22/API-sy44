@@ -28,12 +28,12 @@ class TaskList
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true, options={"default" : "No Image"})
      */
     private $background;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true, options={"default" : "default.png"})
      */
     private $backgroundPath;
 
