@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\View\View;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,7 @@ class ListController extends AbstractFOSRestController
     /**
      * @Rest\Get("/lists", name="get_lists")
      */
-    public function getLists()
+    public function getLists(): View
     {
         $data = $this->tlr->findAll();
         return $this->view([$data, Response::HTTP_OK]);
@@ -43,7 +44,7 @@ class ListController extends AbstractFOSRestController
     /**
      * @Rest\Get("/lists/{id}", name="get_list")
      */
-    public function getList(int $id)
+    public function getList(int $id): View
     {
         $data = $this->tlr->findOneBy(["id" => $id]);
         if($data) return $this->view([$data, Response::HTTP_FOUND]);
@@ -51,10 +52,22 @@ class ListController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Get("/tasks/{id}/list", name="get_lists_tasks")
+     * @Rest\Get("/lists/{id}/tasks", name="get_lists_tasks")
+     * @param int $id
+     * @return View
      */
-    public function getListsTasks(int $id)
-    {}
+    public function getListsTasks(int $id): View
+    {
+        $list = $this->tlr->findOneBy(["id" => $id]);
+
+        if($list){
+            $tasks = $list->getTasks();
+
+            return $this->view(["task" => $tasks], Response::HTTP_OK);
+        }
+
+        return $this->view(["msg" => "Lista no encontrada"], Response::HTTP_NOT_FOUND);
+    }
 
     /**
      * @Rest\Post("/lists", name="create_list")
@@ -62,7 +75,7 @@ class ListController extends AbstractFOSRestController
      * @Rest\RequestParam(name="background", description="Background Title", nullable=true)
      * @Rest\RequestParam(name="backgroundPath", description="Background url", nullable=true)
      */
-    public function createList(ParamFetcher $paramFetcher)
+    public function createList(ParamFetcher $paramFetcher): View
     {
         $title = $paramFetcher->get("title");
         $bg = $paramFetcher->get("background") ?? "No Image";
@@ -84,22 +97,47 @@ class ListController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Put("/lists/{id}", name="update_list")
+     * @Rest\Patch("/lists/{id}/title", name="update_title_list", methods={"POST", "PATCH"})
+     * @Rest\RequestParam(name="title", description="The new title for the list", nullable=false)
+     * @param ParamFetcher $paramFetcher
+     * @param int $id
+     * @return View
      */
-    public function updateList(int $id)
-    {}
+    public function patchListTitle(ParamFetcher $paramFetcher, int $id): View
+    {
+        $list = $this->tlr->findOneBy(["id" => $id]);
 
-    /**
-     * @Rest\Patch("/lists/{id}", name="patch_list")
-     */
-    public function patchList(int $id)
-    {}
+        if($list){
+            $data = $paramFetcher->get("title");
+            $list->setTitle($data);
+
+            $this->entityManager->persist($list);
+            $this->entityManager->flush();
+
+            return $this->view(["msg" => "Lista actualizada correctamente"], Response::HTTP_OK);
+        }
+
+        return $this->view(["msg" => "No se encontro la lista con ese id"], Response::HTTP_BAD_REQUEST);
+    }
 
     /**
      * @Rest\Delete("/lists/{id}", name="delete_list")
+     * @param int $id
+     * @return View
      */
-    public function deleteList(int $id)
-    {}
+    public function deleteList(int $id): View
+    {
+        $list = $this->tlr->findOneBy(["id" => $id]);
+
+        if($list){
+            $this->entityManager->remove($list);
+            $this->entityManager->flush();
+
+            return $this->view(["msg" => "Lista eliminada correctamente"], Response::HTTP_NO_CONTENT);
+        }
+
+        return $this->view(["msg" => "Lista no encontrada"], Response::HTTP_NOT_FOUND);
+    }
 
     /**
      * @Rest\Patch("/lists/{id}/background", name="background_list", methods={"POST", "PATCH"})
@@ -107,8 +145,9 @@ class ListController extends AbstractFOSRestController
      * @param Request $request
      * @param ParamFetcher $paramFetcher
      * @param int $id
+     * @return View
      */
-    public function backgroundLists(Request $request, ParamFetcher $paramFetcher, int $id)
+    public function backgroundLists(Request $request, ParamFetcher $paramFetcher, int $id): View
     {
         $list = $this->tlr->findOneBy(["id" => $id]);
 
