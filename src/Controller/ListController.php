@@ -8,6 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -97,4 +100,53 @@ class ListController extends AbstractFOSRestController
      */
     public function deleteList(int $id)
     {}
+
+    /**
+     * @Rest\Patch("/lists/{id}/background", name="background_list", methods={"POST", "PATCH"})
+     * @Rest\FileParam(name="image", description="The background of the list", nullable=false, image=true)
+     * @param Request $request
+     * @param ParamFetcher $paramFetcher
+     * @param int $id
+     */
+    public function backgroundLists(Request $request, ParamFetcher $paramFetcher, int $id)
+    {
+        $list = $this->tlr->findOneBy(["id" => $id]);
+
+        if($list){
+            $currentBg = $list->getBackground();
+            if(!is_null($currentBg)){
+                $filesystem = new Filesystem();
+                $filesystem->remove($this->getUploadsDir() . $currentBg);
+            }
+
+            /** @var UploadedFile $file */
+            $file = $paramFetcher->get("image");
+            if($file){
+                $filename = md5(uniqid()) . "." . $file->guessClientExtension();
+
+                $file->move(
+                    $this->getUploadsDir(),
+                    $filename
+                );
+
+                $list->setBackground($filename);
+                $list->setBackgroundPath("/uploads/" . $filename);
+
+                $this->entityManager->persist($list);
+                $this->entityManager->flush();
+
+                $data = $request->getUriForPath($list->getBackgroundPath());
+
+                return $this->view(["msg" => "Imagén cargada correctamente", $data], Response::HTTP_OK);
+            }
+
+            return $this->view(["msg" => "Hubo un error"], Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->view(["msg" => "No se encontro la lista con ese id"], Response::HTTP_NOT_FOUND);
+    }
+
+    private function getUploadsDir(){
+        return $this->getParameter("uploads_dir");
+    }
 }
