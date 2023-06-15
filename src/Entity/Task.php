@@ -30,7 +30,7 @@ class Task
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isCompleted;
+    private $isCompleted = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TaskList", inversedBy="tasks")

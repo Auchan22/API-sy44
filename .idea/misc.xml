@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="PhpEntryPointsManager">
+    <suppressed_annotations>@Rest\Delete</suppressed_annotations>
+    <suppressed_annotations>@Rest\Get</suppressed_annotations>
+    <suppressed_annotations>@Rest\RequestParam</suppressed_annotations>
     <suppressed_annotations>@Rest\Patch</suppressed_annotations>
   </component>
 </project>

@@ -6,3 +6,8 @@ lists:
     type: annotation
     resource: App\Controller\ListController
     prefix: api
+
+tasks:
+    type: annotation
+    resource: App\Controller\TaskController
+    prefix: api
