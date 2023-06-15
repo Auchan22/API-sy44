@@ -30,6 +30,22 @@ class TaskController extends AbstractFOSRestController
     }
 
     /**
+     * @Rest\Get("/tasks/{id}", name="get_task")
+     * @param int $id
+     * @return View
+     */
+    public function getTask(int $id): View
+    {
+        $task = $this->taskRepository->findOneBy(["id" => $id]);
+
+        if($task){
+            return $this->view($task, Response::HTTP_OK);
+        }
+
+        return $this->view(["msg" => "No se encontro la tarea con ese id"], Response::HTTP_NOT_FOUND);
+    }
+
+    /**
      * @Rest\Get("/tasks/{id}/notes", name="get_task_notes")
      * @param int $id
      * @return View

@@ -29,7 +29,23 @@ class NoteController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Delete("/note/{id}", name="delete_note")
+     * @Rest\Get("/notes/{id}", name="get_note")
+     * @param int $id
+     * @return View
+     */
+    public function getNote(int $id):View
+    {
+        $note = $this->noteRepository->findOneBy(["id" => $id]);
+
+        if($note){
+            return $this->view($note, Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->view(["msg" => "No se encontro la nota con ese id"],  Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @Rest\Delete("/notes/{id}", name="delete_note")
      * @param int $id
      * @return void
      */
