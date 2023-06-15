@@ -19,6 +19,8 @@
         "symfony/framework-bundle": "4.4.*",
         "symfony/property-access": "4.4.*",
         "symfony/property-info": "4.4.*",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/security-core": "4.4.*",
         "symfony/serializer": "4.4.*",
         "symfony/validator": "4.4.*",
         "symfony/web-server-bundle": "4.4.*",
