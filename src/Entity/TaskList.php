@@ -38,7 +38,7 @@ class TaskList
     private $backgroundPath;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="list")
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="list", cascade={"REMOVE"})
      */
     private $tasks;
 

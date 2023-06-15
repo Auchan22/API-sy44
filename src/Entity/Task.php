@@ -33,7 +33,7 @@ class Task
     private $isCompleted = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\TaskList", inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity="App\Entity\TaskList", inversedBy="tasks", cascade={"REMOVE"})
      */
     private $list;
 
