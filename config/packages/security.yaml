@@ -30,7 +30,7 @@ security:
             anonymous: true
             provider: test_users
             json_login:
-                check_path: api_ping # TODO: Cambiar por la ruta correcta
+                check_path: api_login # TODO: Cambiar por la ruta correcta
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
@@ -54,7 +54,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: IS:AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         
         # - { path: ^/profile, roles: ROLE_USER }

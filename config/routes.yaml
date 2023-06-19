@@ -16,3 +16,8 @@ notes:
     type: annotation
     resource: App\Controller\NoteController
     prefix: api
+
+login:
+    type: annotation
+    resource: App\Controller\DefaultController
+    prefix: api
