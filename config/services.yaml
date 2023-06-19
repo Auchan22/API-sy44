@@ -28,3 +28,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Asignacion de la clase encargada de manejar los eventos del auth, siguiendo la guia de la docu:  https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/2-data-customization.html#eventsjwt_created
+    App\EventListener\AuthenticationSuccessListener:
+        arguments: ["%lexik_jwt_authentication.token_ttl%"]
+        tags:
+            # Aca le decimos, que el listener encargado del auth success, va a ejecutar el metodo onAuthSuccess de la clase del evento
+            - {name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthSuccess}
+
