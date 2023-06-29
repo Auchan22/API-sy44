@@ -64,6 +64,19 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "start": [
+            "symfony server:start -d",
+            "cd frontend & npm run dev"
+        ],
+        "stop": [
+            "symfony server:stop"
+        ],
+        "build": [
+            "composer dump-env prod",
+            "composer install --no-dev --optimize-autoloader",
+            "php bin/console cache:clear",
+            "cd frontend & npm run build & npm run preview"
         ]
     },
     "conflict": {
