@@ -21,6 +21,15 @@ class DefaultController extends AbstractFOSRestController
     }
 
     /**
+     * @Rest\Get("/prueba")
+     * @return View
+     */
+    public function show(): View
+    {
+        dd($_SERVER["APP_ENV"]);
+    }
+
+    /**
      * @Rest\Post("login", name="api_login")
      */
     public function index(): View
